@@ -18,6 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.ServerEntity
@@ -38,6 +40,9 @@ fun DashboardScreen(
     val unreadAlerts by viewModel.unreadAlerts.collectAsState()
 
     var showAddDialog by remember { mutableStateOf(false) }
+    var isUpdateAvailable by remember { mutableStateOf(true) }
+    var updateVersion by remember { mutableStateOf("v2.4.1") }
+    var releaseNotes by remember { mutableStateOf("Simulated biometrics enrollment, live build monitoring, and secure OTP token visibility are now fully enabled.") }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -58,6 +63,63 @@ fun DashboardScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
+            // GitHub Update Available Banner
+            AnimatedVisibility(visible = isUpdateAvailable) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp)
+                        .testTag("github_update_banner")
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.CloudDownload, contentDescription = "GitHub Update", tint = MaterialTheme.colorScheme.primary)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "UPDATE AVAILABLE: $updateVersion (Stable Release)",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            IconButton(onClick = { isUpdateAvailable = false }) {
+                                Icon(Icons.Default.Close, contentDescription = "Dismiss", tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = releaseNotes,
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Button(
+                                onClick = {
+                                    // Simulation of release packaging download
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                                modifier = Modifier.height(32.dp).testTag("download_apk_btn"),
+                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                            ) {
+                                Icon(Icons.Default.SystemUpdate, contentDescription = null, modifier = Modifier.size(12.dp))
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("DOWNLOAD APK", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            }
+
             // Unread Alert warning banner bar if any exists
             AnimatedVisibility(visible = unreadAlerts.isNotEmpty()) {
                 Surface(
