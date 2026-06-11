@@ -1,0 +1,6 @@
+{
+  "name": "Server Monitor",
+  "description": "Secure server administration, resource tracking, process manager, SSH terminal control, multi-factor authorization, and biometric access.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
